@@ -1,0 +1,242 @@
+PROPUESTA PARA BACKEND
+------------------------------------------------------------------------------------------------------------------------------------
+***Utilizar python Django como lenguaje de Programación****
+
+### Paso 1: Configurar el Proyecto Django
+
+1. **Instalar Python**: Descarga e instala Python desde el sitio web oficial de Python. Durante la instalación, asegúrate de marcar la opción "Add Python to PATH".
+
+2. **Crear un entorno virtual** (opcional pero recomendado):
+
+   Abre la línea de comandos (cmd) y ejecuta los siguientes comandos:
+
+   ---cmd---
+   python -m venv myenv
+   myenv\Scripts\activate  # Activar el entorno virtual
+   ```
+
+3. **Instalar Django y Django REST Framework**:
+
+   Dentro del entorno virtual, instala Django y Django REST Framework usando pip:
+
+   ---cmd---
+   pip install django djangorestframework
+   ```
+
+4. **Crear un nuevo proyecto Django**:
+
+   En la línea de comandos, ejecuta:
+
+   ---cmd---
+   django-admin startproject messaging_api
+   cd messaging_api
+   ```
+
+5. **Crear una nueva aplicación** dentro del proyecto:
+
+   ---cmd----
+   python manage.py startapp messages
+   ```
+
+### Paso 2: Definir el Modelo de Mensaje
+
+En `messages/models.py`, define el modelo para los mensajes:
+
+---python-----
+from django.db import models
+
+class Message(models.Model):
+    sender = models.CharField(max_length=100)
+    receiver = models.CharField(max_length=100)
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.sender} -> {self.receiver}'
+```
+
+### Paso 3: Configurar Serializadores
+
+En `messages/serializers.py`, crea un serializador para convertir los objetos `Message` en JSON y viceversa:
+
+---python---
+from rest_framework import serializers
+from .models import Message
+
+class MessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Message
+        fields = ['id', 'sender', 'receiver', 'content', 'timestamp']
+```
+
+### Paso 4: Crear Vistas y Endpoints
+
+En `messages/views.py`, implementa las vistas para manejar las operaciones CRUD de mensajes:
+
+---python---
+from rest_framework import viewsets
+from .models import Message
+from .serializers import MessageSerializer
+
+class MessageViewSet(viewsets.ModelViewSet):
+    queryset = Message.objects.all()
+    serializer_class = MessageSerializer
+```
+
+### Paso 5: Configurar URLs
+
+En `messaging_api/urls.py`, configura las URL para la API:
+
+---python---
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from messages.views import MessageViewSet
+
+router = DefaultRouter()
+router.register(r'messages', MessageViewSet)
+
+urlpatterns = [
+    path('', include(router.urls)),
+]
+```
+
+### Paso 6: Ejecutar Migraciones y Ejecutar el Servidor
+
+1. Aplica las migraciones a la base de datos:
+
+   ---cmd---
+   python manage.py makemigrations
+   python manage.py migrate
+   ```
+
+2. Inicia el servidor de desarrollo:
+
+   ---cmd---
+   python manage.py runserver
+   ```
+
+### Uso de la API
+
+Ahora puedes interactuar con la API de mensajería a través de herramientas como Postman, curl o incluso navegadores web:
+
+- **Enviar un mensaje** (POST request):
+
+  ```http
+  POST http://127.0.0.1:8000/messages/
+  Content-Type: application/json
+
+  {
+    "sender": "Alice",
+    "receiver": "Bob",
+    "content": "Hello Bob!"
+  }
+  ```
+
+- **Obtener la lista de mensajes** (GET request):
+
+  ```http
+  GET http://127.0.0.1:8000/messages/
+  ```
+
+- **Obtener detalles de un mensaje específico** (GET request):
+
+  ```http
+  GET http://127.0.0.1:8000/messages/{message_id}/
+  ```
+
+### Notas Finales
+
+- Asegúrate de utilizar la ruta correcta (`http://127.0.0.1:8000/`) según el servidor de desarrollo que se inicia con Django.
+
+***********************************************************************************************************************************************************************************************************************************************************************************
+-**Utilizando python con flask**
+
+### Paso 1: Configurar el Entorno Virtual y Instalar Flask
+
+1. **Crear un entorno virtual** (opcional pero recomendado):
+
+   Abre la línea de comandos y ejecuta los siguientes comandos para crear y activar un entorno virtual:
+
+   --cmd--
+   python -m venv myenv
+   source myenv/bin/activate  # Activar el entorno virtual (Linux/macOS)
+   ```
+
+   En Windows, activa el entorno virtual con el siguiente comando:
+
+   ---cmd---
+   myenv\Scripts\activate
+   ```
+
+2. **Instalar Flask**:
+
+   Dentro del entorno virtual, instala Flask usando pip:
+
+   ---cmd---
+   pip install Flask
+   ```
+
+### Paso 2: Configurar la Aplicación Flask
+
+1. **Crear un archivo `app.py`**:
+
+   Crea un archivo llamado `app.py` en el directorio de tu proyecto Flask.
+
+2. **Implementar la Aplicación Flask**:
+
+   En `app.py`, implementa la lógica de la aplicación Flask para la API de mensajería:
+
+   ---python---
+   from flask import Flask, jsonify, request
+
+   app = Flask(__name__)
+   messages = []
+
+   @app.route('/messages', methods=['GET'])
+   def get_messages():
+       return jsonify(messages)
+
+   @app.route('/messages', methods=['POST'])
+   def send_message():
+       data = request.get_json()
+       sender = data.get('sender')
+       receiver = data.get('receiver')
+       content = data.get('content')
+       message = {'sender': sender, 'receiver': receiver, 'content': content}
+       messages.append(message)
+       return jsonify(message), 201
+
+   if __name__ == '__main__':
+       app.run(debug=True)
+   ```
+
+### Uso de la API
+
+Ahora puedes interactuar con la API de mensajería utilizando herramientas como `curl`, Postman o navegadores web:
+
+- **Enviar un mensaje** (POST request):
+
+  ```http
+  POST http://localhost:5000/messages
+  Content-Type: application/json
+
+  {
+    "sender": "Alice",
+    "receiver": "Bob",
+    "content": "Hello Bob!"
+  }
+  ```
+
+- **Obtener la lista de mensajes** (GET request):
+
+  ```http
+  GET http://localhost:5000/messages
+  ```
+
+### Notas Finales
+
+- Este es un ejemplo básico de una API de mensajería utilizando Flask. Puedes expandir y agregar más funcionalidades según tus necesidades, como integrar una base de datos para almacenar los mensajes, implementar autenticación, validaciones, etc.
+
+- Recuerda que este ejemplo no es adecuado para entornos de producción debido a su simplicidad. Para aplicaciones reales, considera utilizar una base de datos como SQLite, PostgreSQL o MongoDB para almacenar y gestionar los mensajes de manera más robusta.
+
+***********************************************************************************************************************************************************************************************************************************************************************************
