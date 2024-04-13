@@ -240,3 +240,5 @@ Ahora puedes interactuar con la API de mensajería utilizando herramientas como 
 - Recuerda que este ejemplo no es adecuado para entornos de producción debido a su simplicidad. Para aplicaciones reales, considera utilizar una base de datos como SQLite, PostgreSQL o MongoDB para almacenar y gestionar los mensajes de manera más robusta.
 
 ***********************************************************************************************************************************************************************************************************************************************************************************
+
+ https://www.altiria.com.mx/enviar-sms-api-rest-json-python/
