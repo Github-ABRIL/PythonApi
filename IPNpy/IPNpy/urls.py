@@ -1,9 +1,8 @@
-
 from django.contrib import admin
 from django.urls import path
 from IPNpy import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.index, name='homepage'),
+    path('conversation/', views.index, name='conversation'),
 ]
